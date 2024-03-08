@@ -2,11 +2,13 @@ package app
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
-type server struct {
+type Server struct {
 	DB     *gorm.DB
 	Router *mux.Router
 }
