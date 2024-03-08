@@ -15,6 +15,9 @@ type Server struct {
 
 func (server *Server) Initialize() {
 	fmt.Println("Welcome to GoToko")
+
+	server.Router = mux.NewRouter()
+	server.initializeRoutes()
 }
 
 func (server *Server) Run(addr string) {
