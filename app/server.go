@@ -37,8 +37,18 @@ type DBConfig struct {
 func (server *Server) Initialize(appConfig AppConfig, dbConfig DBConfig) {
 	fmt.Println("Welcome to " + appConfig.AppName)
 
-	var err error
+	server.InitializeDB(dbConfig)
+	server.initializeRoutes()
+}
 
+func (server *Server) Run(addr string) {
+	fmt.Printf("Listening to Port %s", addr)
+	log.Fatal(http.ListenAndServe(addr, server.Router))
+}
+
+func (server *Server) InitializeDB(dbConfig DBConfig) {
+
+	var err error
 	if dbConfig.DBDriver == "mysql" {
 		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbConfig.DBUSer, dbConfig.DBPassword, dbConfig.DBHost, dbConfig.DBPort, dbConfig.DBName)
 		server.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -51,14 +61,6 @@ func (server *Server) Initialize(appConfig AppConfig, dbConfig DBConfig) {
 	if err != nil {
 		panic("Failed on Connecting to the Database Server")
 	}
-
-	server.Router = mux.NewRouter()
-	server.initializeRoutes()
-}
-
-func (server *Server) Run(addr string) {
-	fmt.Printf("Listening to Port %s", addr)
-	log.Fatal(http.ListenAndServe(addr, server.Router))
 }
 
 func getEnv(key, fallback string) string {
