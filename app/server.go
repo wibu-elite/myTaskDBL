@@ -61,6 +61,16 @@ func (server *Server) InitializeDB(dbConfig DBConfig) {
 	if err != nil {
 		panic("Failed on Connecting to the Database Server")
 	}
+
+	for _, model := range RegisterModels() {
+		err = server.DB.Debug().AutoMigrate(model.Model)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	fmt.Println("Database migrated successfully")
 }
 
 func getEnv(key, fallback string) string {
@@ -78,7 +88,7 @@ func Run() {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error on Loading .env.example file")
+		log.Fatalf("Error on Loading .env file")
 	}
 
 	appConfig.AppName = getEnv("APP_NAME", "GoToko")

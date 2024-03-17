@@ -4,6 +4,8 @@ import "time"
 
 type Address struct {
 	ID         string `gorm:"size:36;not nul;uniqueIndex;primary_key"`
+	User       User
+	UserID     string
 	Name       string `gorm:"size:100"`
 	IsPrimary  bool
 	CityID     string `gorm:"size:100"`
